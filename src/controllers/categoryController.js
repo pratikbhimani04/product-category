@@ -2,14 +2,16 @@ const CategoryModel = require("../model/categoryModel");
 
 async function addCategory(req, res) {
   if (!req.body.category) {
-    return res.status(400).send({ error: "category is required" });
+    return res.status(400).json({ message: "category is required" });
   }
   const category = new CategoryModel(req.body);
   try {
     await category.save();
-    res.status(201).send(category);
+    res
+      .status(201)
+      .json({ message: "category added successfully", category: category });
   } catch (error) {
-    res.status(400).send(error);
+    return res.status(500).json({ message: error.message });
   }
 }
 
@@ -18,14 +20,14 @@ async function addSubCategory(req, res) {
   try {
     const category = await CategoryModel.findById(req.params.id);
     if (!category) {
-      return res.status(404).send({ error: "Category not found" });
+      return res.status(404).json({ message: "Category not found" });
     }
 
     const subcategoryExists = category.subcategories.some(
       (subcategory) => subcategory.sub_name === sub_name
     );
     if (subcategoryExists) {
-      return res.status(400).send({ error: "Subcategory already exists" });
+      return res.status(400).json({ message: "Subcategory already exists" });
     }
 
     category.subcategories.push({ sub_name });
@@ -88,7 +90,9 @@ async function updateCategory(req, res) {
     }
 
     await category.save();
-    res.json(category);
+    res
+      .status(200)
+      .json({ message: "category updated successfully", category: category });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -104,7 +108,7 @@ async function deleteCategory(req, res) {
 
     await CategoryModel.findByIdAndDelete(req.params.id);
 
-    res.json({ message: "Category deleted" });
+    res.status(200).json({ message: "Category deleted" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
