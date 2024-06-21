@@ -4,6 +4,7 @@ const auth = (allowRoles) => {
   return (req, res, next) => {
     try {
       const token = req.headers.authorization.replace("Bearer ", "").trim();
+
       if (!token) {
         return res.status(401).json({
           message: "No token provided",
