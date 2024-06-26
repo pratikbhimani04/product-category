@@ -3,3 +3,5 @@ node_modules/
 
 # Ignore environment variables file
 .env
+
+inventam_tech_solution.postman_collection.json
